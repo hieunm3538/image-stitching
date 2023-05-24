@@ -1,0 +1,24 @@
+graph matches_graph{
+"01.JPG" -- "02.JPG"[label="Nm=190, Ni=142, C=2.18462"];
+"01.JPG" -- "03.JPG"[label="Nm=79, Ni=57, C=1.79811"];
+"01.JPG" -- "04.JPG"[label="Nm=68, Ni=57, C=2.00704"];
+"01.JPG" -- "23.JPG"[label="Nm=75, Ni=62, C=2.03279"];
+"01.JPG" -- "24.JPG"[label="Nm=76, Ni=46, C=1.49351"];
+"05.JPG" -- "06.JPG"[label="Nm=186, Ni=138, C=2.16301"];
+"05.JPG" -- "07.JPG"[label="Nm=75, Ni=48, C=1.57377"];
+"05.JPG" -- "08.JPG"[label="Nm=90, Ni=66, C=1.88571"];
+"08.JPG" -- "09.JPG"[label="Nm=36, Ni=19, C=1.01064"];
+"08.JPG" -- "10.JPG"[label="Nm=39, Ni=21, C=1.06599"];
+"09.JPG" -- "11.JPG"[label="Nm=111, Ni=63, C=1.52542"];
+"09.JPG" -- "12.JPG"[label="Nm=115, Ni=70, C=1.64706"];
+"11.JPG" -- "13.JPG"[label="Nm=87, Ni=64, C=1.87683"];
+"11.JPG" -- "14.JPG"[label="Nm=101, Ni=61, C=1.59269"];
+"15.JPG" -- "18.JPG"[label="Nm=72, Ni=34, C=1.14865"];
+"17.JPG" -- "18.JPG"[label="Nm=188, Ni=128, C=1.98758"];
+"18.JPG" -- "19.JPG"[label="Nm=57, Ni=28, C=1.11554"];
+"18.JPG" -- "20.JPG"[label="Nm=72, Ni=42, C=1.41892"];
+"19.JPG" -- "21.JPG"[label="Nm=76, Ni=47, C=1.52597"];
+"19.JPG" -- "22.JPG"[label="Nm=61, Ni=32, C=1.21673"];
+"21.JPG" -- "23.JPG"[label="Nm=68, Ni=44, C=1.5493"];
+"16.JPG";
+}

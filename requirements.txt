@@ -1,0 +1,5 @@
+opencv-python~=4.7.0.68
+stitching~=0.4.0
+pathlib
+argparse~=1.4.0
+numpy~=1.23.5
