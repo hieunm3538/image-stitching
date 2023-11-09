@@ -97,12 +97,14 @@ class Stitcher:
         matches = self.match_features(features)
         imgs, features, matches = self.subset(imgs, features, matches)
         cameras = self.estimate_camera_parameters(features, matches)
+        # Calculate central image of the matched image
         central_img_name = self.find_central_index(cameras, self.img_handler.img_names) \
             if self.find_central_index(cameras, self.img_handler.img_names) != 0 else img_names[0]
         camera_params = list(cameras)
+        # Calculate non matched images set
         unstitched_imgs = self.find_unstitched_images(img_names, self.img_handler.img_names)
-        print(central_img_name)
         self.rotation.euler_angles([i.R for i in cameras])
+        # Add images to set using rotation matrix
         if self.rotation.rotation_mode and len(unstitched_imgs) <= 12:
             print(unstitched_imgs[:2])
             self.initialize_registration(self.img_handler.img_names + unstitched_imgs[:2])
