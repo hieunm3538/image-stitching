@@ -97,22 +97,23 @@ class Stitcher:
         matches = self.match_features(features)
         imgs, features, matches = self.subset(imgs, features, matches)
         cameras = self.estimate_camera_parameters(features, matches)
-        # Calculate central image of the matched image
-        central_img_name = self.find_central_index(cameras, self.img_handler.img_names) \
-            if self.find_central_index(cameras, self.img_handler.img_names) != 0 else img_names[0]
         camera_params = list(cameras)
-        # Calculate non matched images set
-        unstitched_imgs = self.find_unstitched_images(img_names, self.img_handler.img_names)
-        self.rotation.euler_angles([i.R for i in cameras])
-        # Add images to set using rotation matrix
-        if self.rotation.rotation_mode and len(unstitched_imgs) <= 12:
-            print(unstitched_imgs[:2])
-            self.initialize_registration(self.img_handler.img_names + unstitched_imgs[:2])
-            imgs = self.resize_medium_resolution()
-            camera_params += self.calculate_camera_params_unstitched_imgs(img_names,
-                                                                          unstitched_imgs,
-                                                                          camera_params[0],
-                                                                          img_names.index(central_img_name))
+        if self.rotation is not None:
+            # Calculate central image of the matched by feature image
+            central_img_name = self.find_central_index(cameras, self.img_handler.img_names) \
+                if self.find_central_index(cameras, self.img_handler.img_names) != 0 else img_names[0]
+            # Find low feature images list
+            low_feature_images = list(set(img_names) - set(self.img_handler.img_names))
+            self.rotation.convert_to_euler_angles([i.R for i in cameras])
+            # Add images to set using rotation matrix if number of low feature images is lower than 25% of total images
+            if self.rotation.rotation_mode and len(low_feature_images) <= len(camera_params) // 4:
+                print(low_feature_images[:2])
+                self.initialize_registration(self.img_handler.img_names + low_feature_images[:2])
+                imgs = self.resize_medium_resolution()
+                camera_params += self.calculate_camera_params_for_images(img_names,
+                                                                         low_feature_images,
+                                                                         camera_params[0],
+                                                                         img_names.index(central_img_name))
         cameras = self.refine_camera_parameters(features, matches, camera_params)
         cameras = self.perform_wave_correction(cameras)
         self.estimate_scale(camera_params)
@@ -272,14 +273,11 @@ class Stitcher:
     def find_central_index(self, estimated_camera, img_names):
         return self.rotation.detect_central_image(estimated_camera, img_names)
 
-    def find_unstitched_images(self, imgs, subset_imgs):
-        return list(set(imgs) - set(subset_imgs))
-
-    def calculate_camera_params_unstitched_imgs(self, imgs, unstitched_imgs, estimated_camera, central_index):
+    def calculate_camera_params_for_images(self, images, low_feature_images, estimated_camera, central_index):
         camera_params = []
-        for i in range(len(unstitched_imgs)):
+        for i in range(len(low_feature_images)):
             camera_param = cv2.detail.CameraParams()
-            camera_param.R = self.rotation.calculate_rotation_matrix_to_central_image(central_index, imgs.index(unstitched_imgs[i])).astype(np.float32)
+            camera_param.R = self.rotation.calculate_rotation_matrix_to_central_image(central_index, images.index(low_feature_images[i])).astype(np.float32)
             camera_param.aspect = estimated_camera.aspect
             camera_param.focal = estimated_camera.focal
             camera_param.ppx = estimated_camera.ppx

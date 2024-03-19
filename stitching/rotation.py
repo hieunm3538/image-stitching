@@ -13,8 +13,6 @@ class Rotation:
         if json_input:
             with open(json_input, 'r') as j:
                 camera_params = json.loads(j.read())
-            # camera_params = json.loads(json_input)
-            # intrisic_matrix = [np.array(R) for R in dict["K"]]
             self.collected_cameras = [np.array(rotation) for rotation in camera_params["rotations"]]
             self.angles = [np.array(angle) for angle in camera_params["angles"]]
 
@@ -32,25 +30,14 @@ class Rotation:
         if central_index == image_index:
             return self.collected_cameras[image_index]
         angle = [i * 180 / np.pi for i in self.angles[image_index] - self.angles[central_index]]
-        angle[1] += (image_index - central_index) // 2 * 20
-        # angle[2] *= -0.7
-        # angle[0] *= -0.1
         rotation = R.from_euler('zyx', angle, degrees=True)
-        print("Image index: " + str(image_index))
-        print(rotation.as_matrix())
-        print("Angles:")
-        print(angle)
-        print((image_index - central_index) // 2 * 30)
- #        return np.array([[ 0.28652248,  0.15573756,  0.83455145],
- # [-0.114048,    0.6318925,  -0.14520025],
- # [-0.4678647,  -0.02612399,  0.11794481]])
         return rotation.as_matrix()
 
-    def euler_angles(self, cameras):
+    @staticmethod
+    def convert_to_euler_angles(cameras):
         angles = []
         for i in cameras:
             angle = R.from_matrix(i)
             angles.append(angle.as_euler('zyx',degrees=True))
 
-        print(angles)
-
+        return angles
